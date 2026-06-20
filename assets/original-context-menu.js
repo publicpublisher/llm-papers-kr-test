@@ -50,6 +50,12 @@
         border-bottom: 1px solid rgba(15, 23, 42, 0.10);
         background: rgba(248, 250, 252, 0.98);
         border-radius: 14px 14px 0 0;
+        cursor: move;
+        cursor: grab;
+        user-select: none;
+      }
+      .tc-original-head:active {
+        cursor: grabbing;
       }
       .tc-original-title {
         display: flex;
@@ -246,6 +252,43 @@
     menu.querySelector(".tc-original-close").addEventListener("click", closeMenu);
     positionMenu(event);
     setTimeout(() => menu && menu.querySelector(".tc-original-close").focus({ preventScroll: true }), 0);
+
+    // Make the menu draggable
+    const head = menu.querySelector(".tc-original-head");
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let menuStartX = 0;
+    let menuStartY = 0;
+
+    const onPointerMove = (e) => {
+      if (!isDragging || !menu) return;
+      let left = menuStartX + (e.clientX - dragStartX);
+      let top = menuStartY + (e.clientY - dragStartY);
+      menu.style.left = `${left}px`;
+      menu.style.top = `${top}px`;
+      menu.style.right = 'auto';
+      menu.style.bottom = 'auto';
+    };
+
+    const onPointerUp = () => {
+      isDragging = false;
+      document.removeEventListener("pointermove", onPointerMove);
+      document.removeEventListener("pointerup", onPointerUp);
+    };
+
+    head.addEventListener("pointerdown", (e) => {
+      if (e.target.closest("button") || e.target.closest("a")) return;
+      isDragging = true;
+      dragStartX = e.clientX;
+      dragStartY = e.clientY;
+      const rect = menu.getBoundingClientRect();
+      menuStartX = rect.left;
+      menuStartY = rect.top;
+      document.addEventListener("pointermove", onPointerMove);
+      document.addEventListener("pointerup", onPointerUp);
+      e.preventDefault();
+    });
 
     // Render math in the menu
     const mathSpans = menu.querySelectorAll(".tc-math");
