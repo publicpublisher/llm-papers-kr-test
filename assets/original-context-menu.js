@@ -213,7 +213,7 @@
     highlighted = elements;
     highlighted.forEach((el) => el.classList.add("tc-original-active"));
 
-    const items = elements
+    let itemsHtml = elements
       .map((el, index) => ({ index, data: byId.get(el.getAttribute("data-original-id")) }))
       .filter((item) => item.data && item.data.text)
       .map((item) => `
@@ -222,6 +222,9 @@
           <div class="tc-original-text">${item.data.text}</div>
         </li>`)
       .join("");
+
+    // Prevent Distill's auto-renderer from interfering by renaming <d-math> to <span class="tc-math">
+    itemsHtml = itemsHtml.replace(/<d-math([^>]*)>/g, '<span class="tc-math"$1>').replace(/<\/d-math>/g, '</span>');
 
     menu = document.createElement("aside");
     menu.className = "tc-original-menu";
@@ -236,7 +239,7 @@
         <button type="button" class="tc-original-close" aria-label="원문 보기 닫기">닫기</button>
       </div>
       <div class="tc-original-body">
-        <ul class="tc-original-list">${items}</ul>
+        <ul class="tc-original-list">${itemsHtml}</ul>
         <div class="tc-original-help">번역 문단을 우클릭하거나, 여러 문단을 드래그 선택한 뒤 우클릭하면 해당 범위의 원문을 볼 수 있습니다. Esc 또는 닫기로 닫습니다.</div>
       </div>`;
     document.body.appendChild(menu);
@@ -245,10 +248,10 @@
     setTimeout(() => menu && menu.querySelector(".tc-original-close").focus({ preventScroll: true }), 0);
 
     // Render math in the menu
-    const dMaths = menu.querySelectorAll("d-math");
-    if (dMaths.length > 0) {
+    const mathSpans = menu.querySelectorAll(".tc-math");
+    if (mathSpans.length > 0) {
       function renderMath() {
-        for (const el of dMaths) {
+        for (const el of mathSpans) {
           try {
             window.katex.render(el.textContent, el, { displayMode: el.hasAttribute("block"), throwOnError: false });
           } catch (e) {
