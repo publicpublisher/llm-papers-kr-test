@@ -31,7 +31,9 @@
         min-height: 240px;
         max-width: calc(100vw - 24px);
         max-height: calc(100vh - 24px);
-        overflow: auto;
+        overflow: visible;
+        display: flex;
+        flex-direction: column;
         color: #172033;
         background: rgba(255, 255, 255, 0.985);
         border: 1px solid rgba(15, 23, 42, 0.16);
@@ -106,7 +108,11 @@
         white-space: nowrap;
       }
       .tc-original-close:hover, .tc-original-close:focus { background: #1d4ed8; outline: none; }
-      .tc-original-body { padding: 14px 18px 16px 20px; }
+      .tc-original-body { 
+        padding: 14px 18px 16px 20px; 
+        overflow-y: auto; 
+        flex: 1;
+      }
       .tc-original-list {
         margin: 0;
         padding: 0 0 0 1.2em;

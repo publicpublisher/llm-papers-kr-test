@@ -219,9 +219,12 @@ def inject_scripts(html: str, paper_id: str, prefix: str, original_url: str) -> 
 
     lower = html.lower()
     pos = lower.rfind("</body>")
+    
+    global_css = "\n<style>d-math:not([block]) { position: relative; top: 0.15em; }</style>\n"
+    
     if pos != -1:
-        return html[:pos] + snippet + html[pos:]
-    return html + snippet
+        return html[:pos] + global_css + snippet + html[pos:]
+    return html + global_css + snippet
 
 
 def ensure_original_file(paper: dict) -> None:
