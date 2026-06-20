@@ -202,11 +202,21 @@ def inject_scripts(html: str, paper_id: str, prefix: str, original_url: str) -> 
     html = SOURCE_SCRIPT_RE.sub("", html)
     html = DATA_SCRIPT_RE.sub("", html)
     html = HELPER_SCRIPT_RE.sub("", html)
+    
+    # Remove Content-Security-Policy meta tags that block external scripts on SingleFile snapshots
+    html = re.sub(r'<meta[^>]*http-equiv="?content-security-policy"?[^>]*>', '', html, flags=re.I)
+    
     snippet = (
         f'\n<script>window.TC_ORIGINAL_SOURCE_URL = {json.dumps(original_url)};</script>\n'
         f'<script src="{prefix}assets/original-context-data/{paper_id}.js"></script>\n'
         f'<script src="{prefix}assets/original-context-menu.js"></script>\n'
     )
+
+    # Fix relative image URLs (./png/ or png/) to point to the original site since images aren't included in the repo
+    base_url = original_url.rsplit('/', 1)[0] + '/'
+    html = html.replace('src="./png/', f'src="{base_url}png/')
+    html = html.replace('src="png/', f'src="{base_url}png/')
+
     lower = html.lower()
     pos = lower.rfind("</body>")
     if pos != -1:
