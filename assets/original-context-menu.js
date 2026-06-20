@@ -322,8 +322,12 @@
       .filter((item) => item.data && item.data.text)
       .map((item) => `
         <li>
+<<<<<<< HEAD
           <span class="tc-original-label">원문 ${item.index + 1}</span>
           <div class="tc-original-text">${item.data.text}</div>
+=======
+          <div class="tc-original-text">${escapeText(item.data.text)}</div>
+>>>>>>> 82e1f80 (Fix original context menu fallback and remove labels)
         </li>`)
       .join("");
 
