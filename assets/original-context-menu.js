@@ -48,6 +48,7 @@
         position: relative;
         top: 0.15em;
       }
+      .tc-original-menu .katex { color: #172033; }
       .tc-resizer { position: absolute; z-index: 10; }
       .tc-resizer-t { top: -4px; left: 10px; right: 10px; height: 8px; cursor: n-resize; }
       .tc-resizer-b { bottom: -4px; left: 10px; right: 10px; height: 8px; cursor: s-resize; }
@@ -164,6 +165,7 @@
         .tc-original-text { color: #e5e7eb; }
         .tc-original-label { background: rgba(147,197,253,.16); color: #bfdbfe; }
         .tc-original-help { color: #94a3b8; }
+        .tc-original-menu .katex { color: #e5e7eb; }
       }
     `;
     document.head.appendChild(style);
